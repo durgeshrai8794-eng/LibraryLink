@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LibraryLink | Issue Book</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/0faddc1af8.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background: url('/images/back.jpg') center center/cover no-repeat fixed;
+      font-family: "Segoe UI", sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(33, 37, 41, 0.95);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    .navbar-brand { font-size: 1.6rem; font-weight: bold; color: #ffc107 !important; }
+    .nav-link { color: #f8f9fa !important; transition: 0.3s; }
+    .nav-link:hover { color: #ffc107 !important; transform: scale(1.05); }
+
+    /* Form Container */
+    .form-container {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      padding: 35px;
+      margin-top: 100px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: slideUp 1s ease-in-out;
+    }
+
+    h2 {
+      font-weight: bold;
+      color: #2c3e50;
+      text-align: center;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    .form-control, .form-select {
+      border-radius: 12px;
+      padding: 8px 12px;
+      border: 1px solid rgba(0,0,0,0.2);
+      background-color: rgba(255,255,255,0.8);
+    }
+
+    .form-control:focus, .form-select:focus {
+      box-shadow: 0 0 5px rgba(0,123,255,0.5);
+      border-color: #0d6efd;
+    }
+
+    .btn-primary {
+      border-radius: 12px;
+      font-weight: 500;
+      padding: 8px 20px;
+      background-color: #0d6efd;
+      border: none;
+      transition: 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+      transform: scale(1.05);
+    }
+
+    .btn-secondary {
+      border-radius: 12px;
+      font-weight: 500;
+      padding: 8px 20px;
+      transition: 0.3s ease;
+    }
+    .btn-secondary:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">📖 LibraryLink</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="available_books">Available Books</a></li>
+        <li class="nav-item"><a class="nav-link" href="my_books">My Books</a></li>
+        <li class="nav-item"><a class="nav-link" href="students_list">Manage Students</a></li>
+        <li class="nav-item"><a class="nav-link" href="/borrowed_books_list">Books Issued</a></li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="btn btn-warning fw-bold" href="book_register">+ New Book</a></li>
+         <li class="nav-item ms-2">
+            <form th:action="@{/logout}" method="post" class="d-inline">
+              <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+            </form>
+          </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="form-container">
+  <h2>Issue Book</h2>
+  <form th:action="@{/borrowed/save}" th:object="${borrowedBook}" method="post">
+    <div class="mb-3">
+      <label class="form-label">Book Title</label>
+      <input type="text" th:field="*{bookTitle}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Author</label>
+      <input type="text" th:field="*{author}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Borrow Date</label>
+      <input type="date" th:field="*{borrowDate}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Student</label>
+      <select th:field="*{student.id}" class="form-select" required>
+        <option th:each="s : ${students}" th:value="${s.id}" th:text="${s.name}"></option>
+      </select>
+    </div>
+    <div class="d-flex justify-content-center gap-2">
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save</button>
+      <a th:href="@{/borrowed_books_list}" class="btn btn-secondary"><i class="fa-solid fa-xmark"></i> Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
